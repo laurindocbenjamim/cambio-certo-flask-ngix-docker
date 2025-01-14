@@ -1,19 +1,30 @@
-import os
-import uuid
-import secrets
-from flask import Flask,Blueprint, render_template, request, redirect, url_for, flash
-from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField
-from werkzeug.utils import secure_filename
+from app.dependencies import os
+from app.dependencies import uuid
 
+from app.dependencies import Blueprint
+from app.dependencies import render_template
+from app.dependencies import request
+from app.dependencies import redirect
+from app.dependencies import url_for
 
-app = Blueprint("upload_view",__name__)
+from app.dependencies import jsonify
+from app.dependencies import secure_filename
+
+from app.dependencies import FileField
+from app.dependencies import SubmitField
+from app.dependencies import FlaskForm
+
+app = Blueprint("upload_view",__name__,url_prefix='/upload')
 
 class UploadForm(FlaskForm):
     file = FileField('Select File')
     submit = SubmitField('Upload')
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def upload():
+    return render_template('upload.html', title="Upload", secret="")
+
+@app.route('/videos', methods=['POST'])
 def upload_file():
     form = UploadForm()
     if form.validate_on_submit():
@@ -25,6 +36,8 @@ def upload_file():
             os.makedirs(os.path.join(app.instance_path, 'uploads'), exist_ok=True)
             f.save(filepath)
             # ... (your file processing logic here) ...
-            flash('File uploaded successfully!', 'success')
-            return redirect(url_for('upload_file')) 
-    return render_template('upload.html', form=form)
+            #flash('File uploaded successfully!', 'success')
+            #return redirect(url_for('upload_file')) 
+            return jsonify({"status":200})
+    #return render_template('upload.html', form=form)
+    return jsonify({"status":400})

@@ -30,6 +30,8 @@ from app.dependencies import FlaskForm
 
 from app.config import TestConfig, ProductionConfig
 
+from app.blue_prints import load_blue_prints
+
 
 def generate_secret_key(length=32):
   """Generates a cryptographically secure random secret key.
@@ -59,33 +61,12 @@ def create_app(*,JDBC, test_app):
     else: app.config.from_object(ProductionConfig(JDBC))
 
 
+    load_blue_prints(app=app)
     # Create routes
 
     @app.route('/')
     def index():
         return render_template('index.html', title="Home", secret="")
-
-    @app.route('/upload')
-    def upload():
-        return render_template('upload.html', title="Upload", secret="")
-
-    @app.route('/upload/videos', methods=['POST'])
-    def upload_file():
-        form = UploadForm()
-        if form.validate_on_submit():
-            f = form.file.data
-            if f:
-                filename = secure_filename(f.filename)
-                unique_filename = str(uuid.uuid4()) + '_' + filename 
-                filepath = os.path.join(app.instance_path, 'uploads', unique_filename)
-                os.makedirs(os.path.join(app.instance_path, 'uploads'), exist_ok=True)
-                f.save(filepath)
-                # ... (your file processing logic here) ...
-                #flash('File uploaded successfully!', 'success')
-                #return redirect(url_for('upload_file')) 
-                return jsonify({"status":200})
-        #return render_template('upload.html', form=form)
-        return jsonify({"status":400})
 
     @app.route('/secret-key/gen')
     def gene_secret_key():
