@@ -611,8 +611,42 @@
                     #progress {
                         height: 100%;
                         width: 0;
-                        background-color: rgb(228, 52, 52);
+                        background-color: rgb(228, 52, 161);
                     }
+
+                    .tooltip {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+        .next-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #0e010b;
+            color: white;
+            border: 2.6px solid #d13da5;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+        }
+        .next-button i {
+            margin-right: 10px;
+        }
+
+        .next-button:hover{
+            background-color: rgba(100, 36, 184, 0.582);
+        }
 
                     @media (max-width: 768px) {
                         .caption-box {
@@ -639,6 +673,10 @@
                             <button onclick="toggleSpeechText()"><i class="fas fa-comment"></i></button>
                             <button onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
                         </div>
+                        <button class="next-button" id="nextButton" onclick="nextVideo()">
+                            <i class="fas fa-step-forward"></i> Next
+                        </button>
+
                     </div>
                     <div id="speechText" class="caption-box">Speech text will appear here...</div>
                     <!--<div id="settingsMenu" class="settings-menu">
@@ -659,19 +697,19 @@
 
                             <button onclick="zoomOutVideo()"><i class="fas fa-search-minus"></i></button>
 
-                            <sppan id="zoomValue">0%</p>
+                            <sppan id="zoomValue">1%</p>
                         </div>
                         <div style="border-top: 1px solid #a1a1a1;">
                             <label for="speedRange">Speed:</label>
                             <input id="speedRange" type="range" min="0.5" max="2" step="0.1" value="1"
                                 onchange="updateSpeed(this.value)">
-                            <span id="speedValue">0%</span>
+                            <span id="speedValue">50%</span>
                         </div>
                         <div style="border-top: 1px solid #a1a1a1;">
                             <label for="volumeRange">Volume:</label>
                             <input id="volumeRange" type="range" min="0" max="1" step="0.1" value="1"
                                 onchange="updateVolume(this.value)">
-                                <span id="volumeValue">0%</span>
+                                <span id="volumeValue">100%</span>
                         </div>
                     </div>
                 </div>
@@ -800,12 +838,29 @@
             progressBar.style.width = `${progressPercent}%`;
         });
 
+        // Show the next button when the video ends
+        video.addEventListener('ended', () => {
+            nextButton.style.display = 'block';
+        });
+
+        // Hide the next button when the video is playing
+        video.addEventListener('play', () => {
+            nextButton.style.display = 'none';
+        });
+
+        // Placeholder for the next video functionality
+        function nextVideo() {
+            alert('Load next video functionality!');
+        }
+        
+
         // Toggle settings menu visibility
         function toggleSettings() {
             settingsMenu.classList.toggle('active');
         }
 
         document.querySelector('.custom-controls button:first-child i').classList.replace('fa-play', 'fa-pause');
+        
         // playPauseVideo()
         //toggleMute()
 
