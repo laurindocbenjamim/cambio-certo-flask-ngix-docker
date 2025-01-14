@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .dropzone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .dropzone.hover {
+            border-color: #007bff;
+        }
+
+        .progress {
+            height: 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            background-color: #007bff;
+        }
+
+        #file-list {
+            margin-top: 20px;
+        }
+
+        .alert {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">File Upload</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress" id="uploadProgress">
+                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <span id="progressPercentage" class="txt-danger sr-only">0%</span>
+                        </div>
+                        <div class="dropzone" id="dropzone">
+                            <i class="bi bi-cloud-upload display-4"></i>
+                            <p>Drag and drop files here, or click to select files.</p>
+                            <input type="file" id="fileInput" multiple style="display: none;"> 
+                        </div>
+                        <table id="file-list" class="table table-bordered mt-3">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Size</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary mt-3" id="uploadButton">Upload Files</button>
+                        <div id="uploadStatus"></div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('file-list').getElementsByTagName('tbody')[0];
+        const uploadProgress = document.getElementById('uploadProgress').querySelector('.progress-bar');
+        const progressPercentage = document.getElementById('progressPercentage');
+        const uploadButton = document.getElementById('uploadButton');
+        const uploadStatus = document.getElementById('uploadStatus');
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('hover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('hover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('hover');
+            fileInput.files = e.dataTransfer.files;
+            displayFileList();
+        });
+
+        dropzone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            displayFileList();
+        });
+
+        function displayFileList() {
+            fileList.innerHTML = '';
+            for (const file of fileInput.files) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${file.name}</td>
+                    <td>${(file.size / 1024).toFixed(2)} KB</td>
+                    <td>Waiting...</td>
+                `;
+                fileList.appendChild(row);
+            }
+        }
+
+        uploadButton.addEventListener('click', () => {
+            uploadStatus.innerHTML = ''; // Clear previous messages
+            const formData = new FormData();
+            for (const file of fileInput.files) {
+                formData.append('files', file);
+            }
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `${window.location.origin}/upload/videos`, true);
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}'); // Add CSRF header
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    uploadProgress.style.width = `${percentComplete}%`;
+                    progressPercentage.textContent = `${percentComplete.toFixed(2)}%`;
+                }
+            };
+
+            xhr.onload = () => {
+                console.log(xhr)
+                if (xhr.status === 200) {
+                    // Handle successful upload
+                    uploadStatus.innerHTML = '<div class="alert alert-success">Upload successful!</div>';
+                    // Update file status in the table
+                } else {
+                    // Handle upload error
+                    uploadStatus.innerHTML = `<div class="alert alert-danger">Upload failed: ${xhr.status} ${xhr.statusText}</div>`;
+                }
+            };
+
+            xhr.send(formData);
+        });
+    </script>
+
+</body>
+</html>

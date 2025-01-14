@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vending Machine Flowchart</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .card {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #222;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            position: relative; /* For absolute positioning of arrows */
+        }
+        .card-header {
+            background-color: #333;
+            border-bottom: 1px solid #ccc;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .arrow {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-left: 2px solid #fff;
+            border-top: 2px solid #fff;
+            transform: rotate(45deg);
+        }
+        .arrow-down {
+            transform: rotate(-135deg);
+        }
+        .connection {
+            position: absolute;
+            width: 1px;
+            height: 100px; /* Adjust height as needed */
+            background-color: #007bff; /* Blue color */
+            z-index: -1; /* Draw connections behind cards */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vending Machine Flowchart</h1>
+
+        <div id="start" class="card draggable">
+            <div class="card-header">
+                Start
+            </div>
+            <div class="card-body">
+                <div class="arrow arrow-down" style="left: 45%;"></div>
+            </div>
+        </div>
+
+        <div id="getUserInput" class="card draggable">
+            <div class="card-header">
+                Get User Input
+            </div>
+            <div class="card-body">
+                <div class="arrow arrow-down" style="left: 45%;"></div>
+            </div>
+        </div>
+
+        <div id="isCancel" class="card draggable">
+            <div class="card-header">
+                Is Input "Cancel"?
+            </div>
+            <div class="card-body">
+                <div class="arrow" style="left: 10%;"></div>
+                <div class="arrow arrow-down" style="left: 90%;"></div>
+            </div>
+        </div>
+
+        <div id="yes" class="card draggable">
+            <div class="card-header">
+                Yes
+            </div>
+            <div class="card-body">
+                <div class="arrow arrow-down" style="left: 45%;"></div>
+            </div>
+        </div>
+
+        <div id="no" class="card draggable">
+            <div class="card-header">
+                No
+            </div>
+            <div class="card-body">
+                <div class="arrow arrow-down" style="left: 45%;"></div>
+            </div>
+        </div>
+
+        <div id="connections" style="position: absolute; top: 0; left: 0;"></div> 
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        let currentConnection = null;
+        let connectionSource = null;
+
+        $( ".draggable" ).draggable({
+            start: function( event, ui ) {
+                if (currentConnection) {
+                    currentConnection.remove();
+                    currentConnection = null;
+                }
+            },
+            drag: function( event, ui ) {
+                if (currentConnection && currentConnection.data('source') === $(this).attr('id')) {
+                    const sourceOffset = $(this).offset();
+                    currentConnection.css({
+                        left: sourceOffset.left + $(this).width() / 2,
+                        top: sourceOffset.top + $(this).height()
+                    });
+                }
+            }
+        });
+
+        $(document).on('mousedown', '.draggable', function(event) {
+            if (event.which === 1) { // Left mouse button
+                if (!currentConnection) {
+                    currentConnection = $("<div class='connection'></div>").appendTo("#connections");
+                    currentConnection.css({
+                        left: $(this).position().left + $(this).width() / 2,
+                        top: $(this).position().top + $(this).height()
+                    });
+                    connectionSource = $(this).attr('id');
+                } 
+            }
+        });
+
+        $(document).on('mousemove', function(event) {
+            if (currentConnection) {
+                currentConnection.css({
+                    width: event.pageX - currentConnection.position().left
+                });
+            }
+        });
+
+        $(document).on('mouseup', function(event) {
+            if (currentConnection) {
+                // Find the closest draggable element to the mouseup position
+                let closestElement = null;
+                let closestDistance = Infinity;
+                $('.draggable').each(function() {
+                    const elementOffset = $(this).offset();
+                    const distance = Math.sqrt(Math.pow(event.pageX - elementOffset.left, 2) + Math.pow(event.pageY - elementOffset.top, 2));
+                    if (distance < closestDistance && $(this).attr('id') !== connectionSource) {
+                        closestDistance = distance;
+                        closestElement = $(this);
+                    }
+                });
+
+                if (closestElement) {
+                    const targetOffset = closestElement.offset();
+                    currentConnection.css({
+                        width: targetOffset.left - currentConnection.position().left,
+                        height: 1, 
+                        transform: `rotate(${calculateRotation(currentConnection.position(), targetOffset)}deg)`
+                    });
+                } else {
+                    // No valid target found, remove the connection
+                    currentConnection.remove();
+                }
+
+                currentConnection = null;
+                connectionSource = null;
+            }
+        });
+
+        function calculateRotation(source, target) {
+            const dx = target.left - source.left;
+            const dy = target.top - source.top;
+            const radians = Math.atan2(dy, dx);
+            const degrees = radians * (180 / Math.PI);
+            return degrees;
+        }
+    </script>
+</body>
+</html>

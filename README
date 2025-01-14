@@ -1,0 +1,30 @@
+# This is a Demo about Big Data with SparkML using flask
+
+## Instalation
+<h1>This application is using Python 3.12 version.</h1>
+<p>To run the application follow the steps below</p>
+<br>
+<strong><span>1- Update pip</span></strong>
+    <p>
+        python3 -m pip install --upgrade pip
+    </p>
+<br>
+<strong><span>2- pip install flask</span></strong> 
+<br>
+<h3>Containerizing the Application with docker</h3>
+<p>First make sure your docker server is running before executing the following commands, otherwise 
+    your will get the error "<i>ERROR: request returned Internal Server Error for API route and version http://%2F%2F.%2Fpipe%2Fdocker_engine/_ping, check if the server supports 
+        the requested API version.</i>"
+</p>
+<br>
+<strong><span>1- Creating docker image</span></strong>
+<p>(docker build -t <<port:port>> <<application name>> .)</p> 
+<p>docker build -t big-data-sparkml .</p>
+
+<br>
+<strong><span>1- Run the application into the docker server</span></strong> 
+<p>(docker run -p <<port:port>> <<application name>>)</p>
+<p>docker run -p 5000:5000 big-data-sparkml</p>
+<p>You can also run the application by opening your Docker application, find your app name and run it.</p>
+
+## Usage
