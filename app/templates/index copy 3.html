@@ -61,34 +61,28 @@
             color: #ccc;
             display: none;
         }
-        .tooltip {
+        .speed-info {
             position: absolute;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
+            top: 10px;
+            right: 10px;
+            color: #fff;
             font-size: 14px;
-            display: none;
         }
-        .next-button {
+        .next-video-btn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #007bff;
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             display: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
         }
-        .next-button i {
-            margin-right: 10px;
+        .next-video-btn:hover{
+            background-color: rgba(100, 36, 184, 0.582);
         }
     </style>
 </head>
@@ -96,11 +90,10 @@
     <div class="container mt-5">
         <h1 class="text-center">Professional Video Player</h1>
         <div class="video-container">
-            <video id="videoPlayer" autoplay muted playsinline>
-                <source src="/static/AI_Agents_And_Agentic_Reasoning.mp4" type="video/mp4">
+            <video id="videoPlayer" muted playsinline>
+                <source src="/static/249475_tiny.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <div class="tooltip" id="speedTooltip">Speed: 1x</div>
             <div class="custom-controls">
                 <button onclick="playPauseVideo()"><i class="fas fa-play"></i></button>
                 <button onclick="increaseSpeed()"><i class="fas fa-forward"></i></button>
@@ -109,22 +102,23 @@
                 <button onclick="zoomOutVideo()"><i class="fas fa-search-minus"></i></button>
                 <button onclick="toggleCaptions()"><i class="fas fa-closed-captioning"></i></button>
                 <button onclick="toggleSpeechText()"><i class="fas fa-comment"></i></button>
-                <button onclick="increaseVolume()"><i class="fas fa-volume-up"></i></button>
-                <button onclick="decreaseVolume()"><i class="fas fa-volume-down"></i></button>
-                <button onclick="toggleSound()"><i class="fas fa-volume-mute"></i></button>
+                <button onclick="toggleSound()"><i id="soundIcon" class="fas fa-volume-up"></i></button>
             </div>
+            <div class="speed-info" id="speedInfo">Speed: 1x</div>
+            <button class="btn next-video-btn" id="nextVideoBtn">
+                <i class="fas fa-step-forward"></i> Next
+            </button>
             <div id="speechText" class="caption-box">Speech text will appear here...</div>
-            <button class="next-button" id="nextButton" onclick="nextVideo()"><i class="fas fa-arrow-right"></i> Next Video</button>
         </div>
     </div>
 
     <script>
         const video = document.getElementById('videoPlayer');
         const speechText = document.getElementById('speechText');
-        const speedTooltip = document.getElementById('speedTooltip');
-        const nextButton = document.getElementById('nextButton');
+        const speedInfo = document.getElementById('speedInfo');
+        const nextVideoBtn = document.getElementById('nextVideoBtn');
+        const soundIcon = document.getElementById('soundIcon');
 
-        // Play or pause the video
         function playPauseVideo() {
             if (video.paused) {
                 video.play();
@@ -135,36 +129,28 @@
             }
         }
 
-        // Increase playback speed
         function increaseSpeed() {
             video.playbackRate += 0.25;
-            showSpeedTooltip();
+            updateSpeedInfo();
         }
 
-        // Decrease playback speed
         function decreaseSpeed() {
             video.playbackRate = Math.max(0.25, video.playbackRate - 0.25);
-            showSpeedTooltip();
+            updateSpeedInfo();
         }
 
-        // Show the current playback speed as a tooltip
-        function showSpeedTooltip() {
-            speedTooltip.textContent = `Speed: ${video.playbackRate.toFixed(2)}x`;
-            speedTooltip.style.display = 'block';
-            setTimeout(() => speedTooltip.style.display = 'none', 1000);
+        function updateSpeedInfo() {
+            speedInfo.textContent = `Speed: ${video.playbackRate.toFixed(2)}x`;
         }
 
-        // Zoom in the video
         function zoomInVideo() {
             video.style.transform = `scale(${(parseFloat(video.style.transform?.match(/scale\((\d*\.?\d+)\)/)?.[1] || 1) + 0.1).toFixed(1)})`;
         }
 
-        // Zoom out the video
         function zoomOutVideo() {
-            video.style.transform = `scale(${Math.max(1, (parseFloat(video.style.transform?.match(/scale\((\d*\.?\d+)\)/)?.[1] || 1) - 0.1).toFixed(1))})`;
+            //video.style.transform = `scale(${Math.max(1, (parseFloat(video.style.transform?.match(/scale\((\d*\.?\d+)\)/)?.[1] || 1) - 0.1).toFixed(1)})`;
         }
 
-        // Toggle captions
         function toggleCaptions() {
             const tracks = video.textTracks;
             for (let i = 0; i < tracks.length; i++) {
@@ -172,56 +158,35 @@
             }
         }
 
-        // Toggle speech text display
         function toggleSpeechText() {
             if (speechText.style.display === 'none') {
                 speechText.style.display = 'block';
-                speechText.textContent = 'This is a placeholder for the speech text.';
+                speechText.textContent = 'This is a placeholder for the speech text.'; // Replace with actual speech text logic
             } else {
                 speechText.style.display = 'none';
             }
         }
 
-        // Mute or unmute the video
         function toggleSound() {
-            video.muted = !video.muted;
-            const soundIcon = document.querySelector('.custom-controls button:last-child i');
             if (video.muted) {
-                soundIcon.classList.replace('fa-volume-up', 'fa-volume-mute');
-            } else {
+                video.muted = false;
                 soundIcon.classList.replace('fa-volume-mute', 'fa-volume-up');
+            } else {
+                video.muted = true;
+                soundIcon.classList.replace('fa-volume-up', 'fa-volume-mute');
             }
         }
 
-        // Increase the video volume
-        function increaseVolume() {
-            video.volume = Math.min(1, video.volume + 0.1);
-        }
-
-        // Decrease the video volume
-        function decreaseVolume() {
-            video.volume = Math.max(0, video.volume - 0.1);
-        }
-
-        // Show the next button when the video ends
         video.addEventListener('ended', () => {
-            nextButton.style.display = 'block';
+            nextVideoBtn.style.display = 'block';
+            document.querySelector('.custom-controls button:first-child i').classList.replace('fa-pause', 'fa-play');
         });
 
-        // Hide the next button when the video is playing
         video.addEventListener('play', () => {
-            nextButton.style.display = 'none';
+            nextVideoBtn.style.display = 'none';
         });
 
-        // Placeholder for the next video functionality
-        function nextVideo() {
-            alert('Load next video functionality!');
-        }
-
-        
-        playPauseVideo()
-        //toggleSound()
-       
+        updateSpeedInfo(); // Initialize speed info
     </script>
 </body>
 </html>

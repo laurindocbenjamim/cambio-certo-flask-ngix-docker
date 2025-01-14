@@ -127,9 +127,9 @@
         // Play or pause the video
         function playPauseVideo() {
             if (video.paused) {
-                video.play();
+                video.play(); alert("Playing")
                 document.querySelector('.custom-controls button:first-child i').classList.replace('fa-play', 'fa-pause');
-            } else {
+            } else { alert("Pause")
                 video.pause();
                 document.querySelector('.custom-controls button:first-child i').classList.replace('fa-pause', 'fa-play');
             }
@@ -217,11 +217,11 @@
         function nextVideo() {
             alert('Load next video functionality!');
         }
-
         
-        playPauseVideo()
+        //video.play()
+        //playPauseVideo()
         //toggleSound()
-       
+        //document.querySelector('.custom-controls button:last-child i').classList.replace('fa-volume-up', 'fa-volume-mute');
     </script>
 </body>
 </html>

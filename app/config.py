@@ -37,8 +37,11 @@ class TestConfig(Config):
 
     
 
-
+    # Function to check the type of JDBC
     def load_database(self):
+        """
+        
+        """
         if self._JDBC !='sqlite':
             self._DATABASE_URI=''
 
