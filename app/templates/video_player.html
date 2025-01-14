@@ -647,6 +647,11 @@
         <label for="volumeControl">Volume:</label>
         <input id="volumeControl" type="range" min="0" max="1" step="0.1" value="1" onchange="updateVolume(this.value)">
     </div>-->
+    <style>
+        #zoomValue, #speedValue, #volumeValue{            
+            color:#0056b3
+        }
+    </style>
                     <div class="settings-menu" id="settingsMenu">
                         <div>
                             Zoom:
@@ -654,16 +659,19 @@
 
                             <button onclick="zoomOutVideo()"><i class="fas fa-search-minus"></i></button>
 
+                            <sppan id="zoomValue">0%</p>
                         </div>
-                        <div>
+                        <div style="border-top: 1px solid #a1a1a1;">
                             <label for="speedRange">Speed:</label>
                             <input id="speedRange" type="range" min="0.5" max="2" step="0.1" value="1"
                                 onchange="updateSpeed(this.value)">
+                            <span id="speedValue">0%</span>
                         </div>
-                        <div>
+                        <div style="border-top: 1px solid #a1a1a1;">
                             <label for="volumeRange">Volume:</label>
                             <input id="volumeRange" type="range" min="0" max="1" step="0.1" value="1"
                                 onchange="updateVolume(this.value)">
+                                <span id="volumeValue">0%</span>
                         </div>
                     </div>
                 </div>
@@ -749,22 +757,31 @@
 
         // Update video speed
         function updateSpeed(value) {
+            document.getElementById('speedValue').textContent = `${parseFloat((value * 100)/2).toFixed(1)}%/2`;
             video.playbackRate = parseFloat(value);
+            
         }
 
         // Update video volume
         function updateVolume(value) {
-            video.volume = parseFloat(value);
+            document.getElementById('volumeValue').textContent = `${parseFloat(value * 100).toFixed(1)}%/100`;
+            video.volume = parseFloat(value);            
         }
 
         // Zoom in the video
         function zoomInVideo() {
-            video.style.transform = `scale(${(parseFloat(video.style.transform?.match(/scale\((\d*\.?\d+)\)/)?.[1] || 1) + 0.1).toFixed(1)})`;
+            const value = (parseFloat(video.style.transform?.match(/scale\((\d*\.?\d+)\)/)?.[1] || 1) + 0.1).toFixed(1)
+            document.getElementById('zoomValue').textContent = `${parseFloat((value * 10)/100).toFixed(1)}%`;
+            video.style.transform = `scale(${value})`;
+            
         }
 
         // Zoom out the video
         function zoomOutVideo() {
-            video.style.transform = `scale(${Math.max(1, (parseFloat(video.style.transform?.match(/scale\((\d*\.?\d+)\)/)?.[1] || 1) - 0.1).toFixed(1))})`;
+            const value = Math.max(1, (parseFloat(video.style.transform?.match(/scale\((\d*\.?\d+)\)/)?.[1] || 1) - 0.1).toFixed(1))
+            document.getElementById('zoomValue').textContent = `${value}%`;
+            video.style.transform = `scale(${value})`;
+            
         }
 
 
