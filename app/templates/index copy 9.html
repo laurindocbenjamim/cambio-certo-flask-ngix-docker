@@ -52,14 +52,11 @@
             color: #007bff;
         }
         .caption-box {
-            text-align: left;
+            text-align: center;
             padding: 10px;
             font-size: 16px;
             color: #ccc;
             display: none;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            margin-top: 10px;
         }
         .settings-menu {
             position: absolute;
@@ -86,19 +83,11 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            cursor: pointer;
         }
         #progress {
             height: 100%;
             width: 0;
             background-color: green;
-        }
-
-        @media (max-width: 768px) {
-            .caption-box {
-                width: 100%;
-                text-align: center;
-            }
         }
     </style>
 </head>
@@ -110,23 +99,26 @@
                 <source src="/static/AI_Agents_And_Agentic_Reasoning.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <div id="progress-bar" onclick="seekVideo(event)">
+            <div id="progress-bar">
                 <div id="progress"></div>
             </div>
             <div class="custom-controls">
                 <button onclick="playPauseVideo()"><i class="fas fa-play"></i></button>
-                <button onclick="toggleMute()" id="muteButton"><i class="fas fa-volume-mute"></i></button>
                 <button onclick="toggleCaptions()"><i class="fas fa-closed-captioning"></i></button>
                 <button onclick="toggleSpeechText()"><i class="fas fa-comment"></i></button>
                 <button onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
             </div>
-        </div>
-        <div id="speechText" class="caption-box">Speech text will appear here...</div>
-        <div id="settingsMenu" class="settings-menu">
-            <label for="speedControl">Speed:</label>
-            <input id="speedControl" type="range" min="0.5" max="2" step="0.1" value="1" onchange="updateSpeed(this.value)">
-            <label for="volumeControl">Volume:</label>
-            <input id="volumeControl" type="range" min="0" max="1" step="0.1" value="1" onchange="updateVolume(this.value)">
+            <div id="speechText" class="caption-box">Speech text will appear here...</div>
+            <div class="settings-menu" id="settingsMenu">
+                <div>
+                    <label for="speedRange">Speed:</label>
+                    <input id="speedRange" type="range" min="0.5" max="2" step="0.1" value="1" onchange="updateSpeed(this.value)">
+                </div>
+                <div>
+                    <label for="volumeRange">Volume:</label>
+                    <input id="volumeRange" type="range" min="0" max="1" step="0.1" value="1" onchange="updateVolume(this.value)">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -134,9 +126,7 @@
         const video = document.getElementById('videoPlayer');
         const speechText = document.getElementById('speechText');
         const progressBar = document.getElementById('progress');
-        const progressContainer = document.getElementById('progress-bar');
         const settingsMenu = document.getElementById('settingsMenu');
-        const muteButton = document.getElementById('muteButton');
 
         // Toggle play and pause functionality
         function playPauseVideo() {
@@ -147,13 +137,6 @@
                 video.pause();
                 document.querySelector('.custom-controls button:first-child i').classList.replace('fa-pause', 'fa-play');
             }
-        }
-
-        // Toggle mute/unmute functionality
-        function toggleMute() {
-            video.muted = !video.muted;
-            muteButton.querySelector('i').classList.toggle('fa-volume-mute');
-            muteButton.querySelector('i').classList.toggle('fa-volume-up');
         }
 
         // Toggle captions on/off
@@ -179,13 +162,9 @@
             video.volume = parseFloat(value);
         }
 
-        // Seek to a specific part of the video when clicking the progress bar
-        function seekVideo(event) {
-            const rect = progressContainer.getBoundingClientRect();
-            const offsetX = event.clientX - rect.left;
-            const width = rect.width;
-            const seekTime = (offsetX / width) * video.duration;
-            video.currentTime = seekTime;
+        // Toggle settings menu visibility
+        function toggleSettings() {
+            settingsMenu.classList.toggle('active');
         }
 
         // Update progress bar as video plays
@@ -194,10 +173,6 @@
             progressBar.style.width = `${progressPercent}%`;
         });
 
-        // Toggle settings menu visibility
-        function toggleSettings() {
-            settingsMenu.classList.toggle('active');
-        }
     </script>
 </body>
 </html>

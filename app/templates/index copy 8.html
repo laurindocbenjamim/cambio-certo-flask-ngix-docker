@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Video Player</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+        }
+        .video-container {
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+            border: 2px solid #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: black;
+        }
+        #videoPlayer {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        #videoPlayer::-webkit-media-controls {
+            display: none; /* Hide default controls */
+        }
+        #videoPlayer::-moz-media-controls {
+            display: none; /* Hide default controls for Firefox */
+        }
+        .custom-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .custom-controls button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .custom-controls button:hover {
+            color: #007bff;
+        }
+        .settings-menu {
+            position: absolute;
+            top: -200px;
+            right: 10px;
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+            transition: top 0.3s ease;
+        }
+        .settings-menu.active {
+            top: 50px;
+        }
+        .settings-menu input[type="range"] {
+            width: 100%;
+        }
+        .tooltip {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Professional Video Player</h1>
+        <div class="video-container">
+            <video id="videoPlayer" autoplay muted playsinline>
+                <source src="/static/AI_Agents_And_Agentic_Reasoning.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="tooltip" id="speedTooltip">Speed: 1x</div>
+            <div class="custom-controls">
+                <button onclick="playPauseVideo()"><i class="fas fa-play"></i></button>
+                <button onclick="toggleSettingsMenu()"><i class="fas fa-cog"></i></button>
+            </div>
+            <div class="settings-menu" id="settingsMenu">
+                <label for="speedControl">Playback Speed</label>
+                <input type="range" id="speedControl" min="0.25" max="2" step="0.25" value="1" oninput="changeSpeed(this.value)">
+                <label for="volumeControl" class="mt-2">Volume</label>
+                <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('videoPlayer');
+        const speedTooltip = document.getElementById('speedTooltip');
+        const settingsMenu = document.getElementById('settingsMenu');
+
+        // Function to play or pause the video
+        function playPauseVideo() {
+            const playIcon = document.querySelector('.custom-controls button:first-child i');
+            if (video.paused) {
+                video.play();
+                playIcon.classList.replace('fa-play', 'fa-pause');
+            } else {
+                video.pause();
+                playIcon.classList.replace('fa-pause', 'fa-play');
+            }
+        }
+
+        // Toggle settings menu visibility
+        function toggleSettingsMenu() {
+            settingsMenu.classList.toggle('active');
+        }
+
+        // Change playback speed and display tooltip
+        function changeSpeed(value) {
+            video.playbackRate = value;
+            speedTooltip.textContent = `Speed: ${value}x`;
+            speedTooltip.style.display = 'block';
+            setTimeout(() => speedTooltip.style.display = 'none', 1000);
+        }
+
+        // Change video volume
+        function changeVolume(value) {
+            video.volume = value;
+        }
+
+    </script>
+</body>
+</html>

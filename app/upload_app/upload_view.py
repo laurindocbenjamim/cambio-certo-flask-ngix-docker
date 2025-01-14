@@ -22,10 +22,10 @@ class UploadForm(FlaskForm):
 
 @app.route('/')
 def upload():
-    return render_template('upload.html', title="Upload", secret="")
+    return render_template('upload_video.html', title="Upload", secret="")
 
 @app.route('/videos', methods=['POST'])
-def upload_file():
+def upload_videos():
     form = UploadForm()
     if form.validate_on_submit():
         f = form.file.data

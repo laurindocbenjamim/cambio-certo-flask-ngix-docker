@@ -52,14 +52,11 @@
             color: #007bff;
         }
         .caption-box {
-            text-align: left;
+            text-align: center;
             padding: 10px;
             font-size: 16px;
             color: #ccc;
             display: none;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            margin-top: 10px;
         }
         .settings-menu {
             position: absolute;
@@ -93,13 +90,6 @@
             width: 0;
             background-color: green;
         }
-
-        @media (max-width: 768px) {
-            .caption-box {
-                width: 100%;
-                text-align: center;
-            }
-        }
     </style>
 </head>
 <body>
@@ -120,13 +110,17 @@
                 <button onclick="toggleSpeechText()"><i class="fas fa-comment"></i></button>
                 <button onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
             </div>
-        </div>
-        <div id="speechText" class="caption-box">Speech text will appear here...</div>
-        <div id="settingsMenu" class="settings-menu">
-            <label for="speedControl">Speed:</label>
-            <input id="speedControl" type="range" min="0.5" max="2" step="0.1" value="1" onchange="updateSpeed(this.value)">
-            <label for="volumeControl">Volume:</label>
-            <input id="volumeControl" type="range" min="0" max="1" step="0.1" value="1" onchange="updateVolume(this.value)">
+            <div id="speechText" class="caption-box">Speech text will appear here...</div>
+            <div class="settings-menu" id="settingsMenu">
+                <div>
+                    <label for="speedRange">Speed:</label>
+                    <input id="speedRange" type="range" min="0.5" max="2" step="0.1" value="1" onchange="updateSpeed(this.value)">
+                </div>
+                <div>
+                    <label for="volumeRange">Volume:</label>
+                    <input id="volumeRange" type="range" min="0" max="1" step="0.1" value="1" onchange="updateVolume(this.value)">
+                </div>
+            </div>
         </div>
     </div>
 
