@@ -3,6 +3,7 @@ from app.dependencies import uuid
 
 from app.dependencies import Blueprint
 from app.dependencies import render_template
+from app.dependencies import make_response
 from app.dependencies import request
 from app.dependencies import redirect
 from app.dependencies import url_for
@@ -22,7 +23,8 @@ class UploadForm(FlaskForm):
 
 @app.route('/')
 def upload():
-    return render_template('upload_video.html', title="Upload", secret="")
+    response = make_response(render_template('upload_video.html', title="Upload", secret=""))
+    return response
 
 @app.route('/videos', methods=['POST'])
 def upload_videos():

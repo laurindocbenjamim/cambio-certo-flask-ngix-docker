@@ -1,5 +1,6 @@
 
 from app.dependencies import render_template
+from app.dependencies import make_response
 from app.dependencies import flash
 from app.dependencies import secrets
 
@@ -26,7 +27,8 @@ def load_routes(*,app):
     """
     @app.route('/')
     def index():
-        return render_template('video_player.html', title="Home", secret="")
+      response = make_response(render_template('video_player.html', title="Home", secret=""))
+      return response
 
     @app.route('/secret-key/gen')
     def gene_secret_key():
