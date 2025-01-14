@@ -1,5 +1,5 @@
 
-import os
+"""import os
 import uuid
 import secrets
 from flask import Flask,Blueprint, render_template, request, redirect, url_for, flash, jsonify
@@ -7,7 +7,23 @@ from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
 
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect"""
+from app.dependencies import os
+from app.dependencies import uuid
+from app.dependencies import secrets
+from app.dependencies import Flask
+from app.dependencies import render_template
+from app.dependencies import request
+from app.dependencies import redirect
+from app.dependencies import url_for
+from app.dependencies import flash
+from app.dependencies import jsonify
+from app.dependencies import secure_filename
+from app.dependencies import CSRFProtect
+from app.dependencies import FileField
+from app.dependencies import SubmitField
+from app.dependencies import FlaskForm
+
 #from flask import Flask, render_template, url_for
 
 #from . upload_app.upload_view import app as bp_upload
